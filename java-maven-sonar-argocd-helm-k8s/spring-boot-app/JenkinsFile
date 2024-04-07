@@ -2,7 +2,10 @@ pipeline {
  tools {
         maven "Maven3"
     }
-   agent any 
+   agent any
+        environment {
+            SCANNER_HOME= tool 'sonar-scanner'
+        }
      stages {
     stage('Checkout') {
       steps {
@@ -22,9 +25,10 @@ stage ('Sonarqube analysis'){
         SONAR_URL = "https://sonarcloud.io"
       }
             steps {
-        withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {
-          sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn sonar:sonar -Dsonar.organization=develop -Dsonar.projectKey=spring-boot-demo -Dsonar.sources=. -Dsonar.login=$SONAR_AUTH_TOKEN -Dsonar.host.url=${SONAR_URL}'
-        }
+        withSonarQubeEnv('sonar-server') {
+                        sh  ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=spring-boot-app \
+                        -Dsonar.projectKey=spring-boot-app '''
+                    }
                 }
             }
        
