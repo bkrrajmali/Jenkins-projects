@@ -17,8 +17,24 @@ pipeline {
         sh 'cd java-maven-sonar-argocd-helm-k8s/spring-boot-app && mvn clean package'
       }
     }
-}
-
+stage ('Sonarqube analysis'){
+            steps {
+                script {
+                    withSonarQubeEnv('sonar-server') {
+                        sh  ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=springbootapp \
+                        -Dsonar.projectKey=springbootapp '''
+                    }
+                }
+            }
+        }
+        stage ('Quality Gate Test'){
+            steps {
+                script {
+                    waitForQualityGate abortPipeline: false, credentialsId: 'sonarqube'
+                }
+            }
+        }
+     }
 }
 
 
