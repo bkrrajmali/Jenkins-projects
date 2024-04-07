@@ -26,7 +26,7 @@ stage ('Sonarqube analysis'){
       }
             steps {
         withSonarQubeEnv('sonar-server') {
-                        sh  ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.organization=ncpl-org -Dsonar.projectName=spring-boot-app -Dsonar.projectKey=spring-boot-app '''
+                        sh  ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.organization=spring-boot-app -Dsonar.projectName=spring-boot-app -Dsonar.projectKey=spring-boot-app '''
                     }
                 }
             }
